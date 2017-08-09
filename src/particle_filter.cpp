@@ -140,6 +140,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
         double sin_theta = sin(p_theta);
         for (int j = 0; j < observations.size(); j++) {
             LandmarkObs landmark_tmp;
+            landmark_tmp.id = observations[j].id;
             landmark_tmp.x = p_x + cos_theta * observations[j].x - sin_theta * observations[j].y;
             landmark_tmp.y = p_y + sin_theta * observations[j].x + cos_theta * observations[j].y;
             observations_map.push_back(landmark_tmp);
@@ -147,7 +148,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 
         dataAssociation(predictions, observations_map);
 
-        particles[i].weight = 1.0;
+        double w = 1.0;
         for (int j = 0; j < observations_map.size(); j++) {
             int index = observations_map[j].id;
             double o_x = observations_map[j].x;
@@ -158,10 +159,11 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 
             double x_term = pow(o_x - x_predicted, 2) / (2 * pow(std_landmark[0], 2));
             double y_term = pow(o_y - y_predicted, 2) / (2 * pow(std_landmark[1], 2));
-            double w = exp(-(x_term + y_term)) / (2 * M_PI * std_landmark[0] * std_landmark[1]);
-            particles[i].weight *= w;
+            double w_tmp = exp(-(x_term + y_term)) / (2 * M_PI * std_landmark[0] * std_landmark[1]);
+            w *= w_tmp;
         }
-        weights[i] = particles[i].weight;
+        particles[i].weight = w;
+        weights[i]          = w;
     }
 }
 
