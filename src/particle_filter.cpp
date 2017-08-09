@@ -66,13 +66,13 @@ void ParticleFilter::prediction(double delta_t, double std_pos[], double velocit
 
     for (int i = 0; i < num_particles; i++) {
         if (fabs(yaw_rate) < 0.001) {
-            particles[i].x = velocity_delta_t * cos(paticles[i].theta);
-            particles[i].y = velocity_delta_t * sin(paticles[i].theta);
+            particles[i].x += velocity_delta_t * cos(particles[i].theta);
+            particles[i].y += velocity_delta_t * sin(particles[i].theta);
         }
         else {
-            particles[i].x = velocity_yaw_rate * (sin(particles[i].theta + yaw_rate_delta_t) - sin(paticles[i].theta));
-            particles[i].y = velocity_yaw_rate * (cos(particles[i].theta) - cos(paticles[i].theta + yaw_rate_delta_t))
-            particles[i].theta = particles[i].theta + yaw_rate_delta_t;
+            particles[i].x      += velocity_yaw_rate * (sin(particles[i].theta + yaw_rate_delta_t) - sin(particles[i].theta));
+            particles[i].y      += velocity_yaw_rate * (cos(particles[i].theta) - cos(particles[i].theta + yaw_rate_delta_t));
+            particles[i].theta  += particles[i].theta + yaw_rate_delta_t;
         }
         // add noises
         particles[i].x      += dist_x(gen);
