@@ -19,13 +19,15 @@
 
 using namespace std;
 
+static default_random_engine gen;
+
+
 void ParticleFilter::init(double x, double y, double theta, double std[]) {
 	// TODO: Set the number of particles. Initialize all particles to first position (based on estimates of 
 	//   x, y, theta and their uncertainties from GPS) and all weights to 1. 
 	// Add random Gaussian noise to each particle.
 	// NOTE: Consult particle_filter.h for more information about this method (and others in this file).
 
-    default_random_engine gen;
     // create normal distribution for x, y and theta
     normal_distribution<double> dist_x(x, std[0]);
     normal_distribution<double> dist_y(y, std[1]);
@@ -59,7 +61,6 @@ void ParticleFilter::prediction(double delta_t, double std_pos[], double velocit
     double velocity_yaw_rate = velocity / yaw_rate;
     double yaw_rate_delta_t = yaw_rate * delta_t;
 
-    default_random_engine gen;
     normal_distribution<double> dist_x(0.0, std_pos[0]);
     normal_distribution<double> dist_y(0.0, std_pos[1]);
     normal_distribution<double> dist_theta(0.0, std_pos[2]);
@@ -176,7 +177,6 @@ void ParticleFilter::resample() {
 	//   http://en.cppreference.com/w/cpp/numeric/random/discrete_distribution
     vector<Particle> particles_resampled;
     particles_resampled.resize(num_particles);
-    default_random_engine gen;
     discrete_distribution<int> dist(weights.begin(), weights.end());
     
     for (int i = 0; i < num_particles; i ++) {
