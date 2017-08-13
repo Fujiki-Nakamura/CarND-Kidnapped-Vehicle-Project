@@ -150,7 +150,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 
         dataAssociation(predictions, observations_map);
 
-        double w = 1.0;
+        double w_total = 1.0;
         for (int j = 0; j < observations_map.size(); j++) {
             int index = observations_map[j].id;
             double o_x = observations_map[j].x;
@@ -162,13 +162,14 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
                     double y_predicted = predictions[k].y;
                     double x_term = pow(o_x - x_predicted, 2) / (2 * pow(std_landmark[0], 2));
                     double y_term = pow(o_y - y_predicted, 2) / (2 * pow(std_landmark[1], 2));
-                    double w_tmp = exp(-(x_term + y_term)) / (2 * M_PI * std_landmark[0] * std_landmark[1]);
-                    w *= w_tmp;
+                    double gauss_norm = 1.0 / (2 * M_PI * std_landmark[0] * std_landmark[1]);
+                    double w = gauss_norm * exp(-(x_term + y_term));
+                    w_total *= w;
                 }
             }
         }
-        particles[i].weight = w;
-        weights[i]          = w;
+        particles[i].weight = w_total;
+        weights[i]          = w_total;
     }
 }
 
