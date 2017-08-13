@@ -136,7 +136,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
                 predictions.push_back(landmark_in_range);
             }
         }
-
+        // transform to map coordinates
         vector<LandmarkObs> observations_map;
         double cos_theta = cos(p_theta);
         double sin_theta = sin(p_theta);
@@ -147,9 +147,9 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
             landmark_tmp.y = p_y - sin_theta * observations[j].x + cos_theta * observations[j].y;
             observations_map.push_back(landmark_tmp);
         }
-
+        // data association
         dataAssociation(predictions, observations_map);
-
+        // calculate weights
         double w_total = 1.0;
         for (int j = 0; j < observations_map.size(); j++) {
             int o_id = observations_map[j].id;
