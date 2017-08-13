@@ -152,12 +152,12 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 
         double w_total = 1.0;
         for (int j = 0; j < observations_map.size(); j++) {
-            int index = observations_map[j].id;
+            int o_id = observations_map[j].id;
             double o_x = observations_map[j].x;
             double o_y = observations_map[j].y;
 
             for (int k = 0; k < predictions.size(); k++) {
-                if (predictions[k].id == index) {
+                if (predictions[k].id == o_id) {
                     double x_predicted = predictions[k].x;
                     double y_predicted = predictions[k].y;
                     double x_term = pow(o_x - x_predicted, 2) / (2 * pow(std_landmark[0], 2));
